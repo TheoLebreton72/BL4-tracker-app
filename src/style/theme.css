@@ -1,0 +1,59 @@
+.container{
+    /*background-color: red;*/
+}
+
+.tracker-title {
+    padding: 12px 30px 12px 30px ;
+    text-align: center;
+    border-top: 3px solid ;
+    border-bottom: 3px solid ;
+    background: #AEB800;
+    color: rgb(255, 190, 0);
+    font-family: "Orbitron", sans-serif;
+    font-size: 30px;
+    letter-spacing: 3px;
+    font-weight: 700;
+
+    /*dégradé du fond*/
+    background: linear-gradient(
+            90deg,
+            rgba(174, 184, 0, 0) 0%,
+            rgba(174, 184, 0, 0.15) 25%,
+            rgba(174, 184, 0, 0.25) 50%,
+            rgba(174, 184, 0, 0.15) 75%,
+            rgba(174, 184, 0, 0) 100%);
+
+    /*dégradé des bordure*/
+    border-image: linear-gradient(
+            90deg,
+            rgba(255,190,0,0) 0%,
+            rgb(255, 190, 0) 50%,
+            rgba(255,190,0,0) 100%
+    ) 1;
+
+
+    /* Effet glow */
+    text-shadow:
+            0 0 4px #ffaa00,
+            0 0 18px rgb(255, 170, 0);
+
+    text-transform: uppercase;
+
+}
+
+.count-text{
+    font-family: "Orbitron", sans-serif;
+    padding: 12px 30px 12px 30px ;
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.count-button{
+    width: 45%;
+    margin: 0 5px 0 5px;
+}
+
+
+
