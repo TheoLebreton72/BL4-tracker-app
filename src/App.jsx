@@ -1,11 +1,11 @@
 import './style/App.css'
-import Compteur from "./components/Compteur.jsx";
+import MenuConfig from "./components/MenuConfig.jsx";
 
 function App() {
 
   return (
       <>
-        <Compteur/>
+        <MenuConfig/>
       </>
   )
 }
