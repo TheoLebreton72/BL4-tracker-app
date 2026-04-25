@@ -1,5 +1,5 @@
-import React from 'react';
 import { Menu, MenuItem, Submenu } from "@tauri-apps/api/menu";
+import {listen} from "@tauri-apps/api/event";
 import {useEffect, useRef, useState} from "react";
 import Compteur from "./Compteur.jsx";
 import RightClickMenu from "./RightClickMenu.jsx";
@@ -47,6 +47,24 @@ function MenuConfig(props) {
         onEditCount: openEditCount,
         onResetCount: resetCount,
     });
+
+    useEffect(() => {
+
+        //écoute des event du script python
+
+        const eventIncrement = listen("counter-increment", () =>{
+            setCount(c => c + 1);
+        });
+
+        const eventDecrement = listen("counter-decrement", () =>{
+            setCount(c => c > 0 ? c - 1 : 0);
+        });
+
+        return () => {
+            eventIncrement.then(fn => fn());
+            eventDecrement.then(fn => fn());
+        }
+    }, []);
 
     return (
         <div>
