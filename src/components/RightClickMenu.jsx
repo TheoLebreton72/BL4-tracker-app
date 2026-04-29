@@ -2,7 +2,7 @@ import React, {useEffect, useRef} from 'react';
 import Compteur from "./Compteur.jsx";
 import {Menu, MenuItem, Submenu} from "@tauri-apps/api/menu";
 
-export default function RightClickMenu({ onEditTitle, onEditCount, onResetCount }) {
+export default function RightClickMenu({ onEditTitle, onEditCount, onResetCount, onEditKeybind }) {
     const menuRef = useRef(null);
 
     useEffect(() => {
@@ -37,13 +37,20 @@ export default function RightClickMenu({ onEditTitle, onEditCount, onResetCount 
                             onEditTitle();
                         },
                     },
-                    countMenu],
+                    countMenu,
+                    {
+                        id: "keybind",
+                        text: "Assigner des touches",
+                        action: () => {
+                           onEditKeybind();
+                        }
+                    }],
             });
             menuRef.current = menu;
         }
 
         createMenu();
-    }, [onEditTitle, onEditCount, onResetCount]);
+    }, [onEditTitle, onEditCount, onResetCount, onEditKeybind]);
 
     const handleRightClick = async (event) => {
         event.preventDefault();

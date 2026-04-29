@@ -40,8 +40,13 @@
     padding: 14px 28px;
     border-radius: 3px;
     width: 250px;
+    color: #1a1a1a;
 }
 
 .btn-container{
     padding: 10px;
+}
+
+.padding-input{
+    margin-top: 15px;
 }

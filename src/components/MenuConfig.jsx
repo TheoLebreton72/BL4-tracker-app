@@ -4,17 +4,23 @@ import {useEffect, useRef, useState} from "react";
 import Compteur from "./Compteur.jsx";
 import RightClickMenu from "./RightClickMenu.jsx";
 import InputModal from "./Modal/InputModal.jsx";
+import KeybindModal from "./Modal/KeybindModal.jsx";
 
 function MenuConfig(props) {
     const [title, setTitle] = useState("Saisir un titre");
     const [count, setCount] = useState(0);
     const [inputModal, setInputModal] = useState(false);
+    const [keybindModal, setKeybindModal] = useState(false);
     const [modalType, setModalType] = useState("");
 
 
     //fermer la modal
-    const closeModal = () => {
-        setInputModal(false);
+    const closeModal = (modalType) => {
+        if (modalType === "keybind") {
+            setKeybindModal(false);
+        }else{
+            setInputModal(false);
+        }
     }
 
     // permet d'ouvrir le champs de modification du titre
@@ -27,6 +33,12 @@ function MenuConfig(props) {
     const openEditCount = () => {
         setModalType("count");
         setInputModal(true);
+    }
+
+    const openEditKeybind = () => {
+        setModalType("keybind");
+        setKeybindModal(true);
+
     }
 
     //modifier le titre
@@ -46,6 +58,7 @@ function MenuConfig(props) {
         onEditTitle: openEditTitle,
         onEditCount: openEditCount,
         onResetCount: resetCount,
+        onEditKeybind: openEditKeybind,
     });
 
     useEffect(() => {
@@ -77,6 +90,7 @@ function MenuConfig(props) {
                 editCount={editCount}
                 title={title}
                 count={count} />
+            <KeybindModal modal={keybindModal} onClose={closeModal} modalType={modalType} />
         </div>
     );
 }
