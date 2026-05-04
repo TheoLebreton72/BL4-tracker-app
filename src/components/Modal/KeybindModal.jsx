@@ -4,26 +4,35 @@ import '../../style/modal.css'
 
 function KeybindModal(props) {
 
+    // Définir les touches initiales, elles sont définit au chargement de l'application
+    const [decrementInitial, setDecrementInitial] = useState(null);
+    const [incrementInitial, setIncrementInitial] = useState(null);
 
-    const [decrementBind, setDecrementBind] = useState("-");
-    const [incrementBind, setIncrementBind] = useState("+");
+    // Définir les touches mise a jour
+    const [decrementBindUpdate, setDecrementBindUpdate] = useState("?");
+    const [incrementBindUpdate, setIncrementBindUpdate] = useState("?");
 
+
+
+    const inputDecrementRef = useRef(null);
+    const inputIncrementRef = useRef(null);
 
 
     async function updateKeybind() {
         try {
-            const update = await invoke('update_keybind', { decrementKeybind: decrementBind, incrementKeybind: incrementBind });
-            console.log(update);
+            const update = await invoke('update_keybind', { decrementKeybind: decrementBindUpdate, incrementKeybind: incrementBindUpdate });
+            setDecrementInitial(decrementBindUpdate);
+            setIncrementInitial(incrementBindUpdate);
         } catch (error) {
             console.error('Erreur :', error);
         }
     }
 
-    // va permettre de charger les touches actuelles et non les touches par défaut.
+    // va permettre de charger les touches actuelles
     function loadCurrentKeybinds() {
         invoke('get_keybinds').then(([increment, decrement]) => {
-            setDecrementBind(decrement);
-            setIncrementBind(increment);
+            setDecrementInitial(decrement);
+            setIncrementInitial(increment);
         });
     }
 
@@ -36,51 +45,109 @@ function KeybindModal(props) {
         <>
             {props.modal && (
                 <>
-                    <div className="modal">
-                        <div className="overlay"></div>
-                        <div className="modal-content">
-                            Décrémenter
-                            <input
-                                className="input-modal"
-                                id="decrement-input"
-                                value={decrementBind.toUpperCase()}
-                                onKeyDown={(e) => {
-                                    e.preventDefault();
-                                    // passage en lower case des touches pour que les touches spéciales (F1,F2, delete...) soient compatible avec key.name du coté python.
-                                    let key = e.key.toLowerCase();
-                                    key = key.replace("arrow",""); // pour les fleches on retire le "arrow" pour que ce soit compatible avec key.name coté python
-                                    setDecrementBind(key);
-                                }}
-                            />
-
-                            Incrémenter
-                            <input
-                                className="input-modal padding-input"
-                                id="increment-input"
-                                value={incrementBind.toUpperCase()}
-                                onKeyDown={(e) => {
-                                    e.preventDefault();
-                                    let key = e.key.toLowerCase();
-                                    key = key.replace("arrow","");
-                                    setIncrementBind(key);
-                                }}  />
-
-                            <div className="btn-container">
-                                <button  className="btn-modal" onClick={() => {
-                                    updateKeybind().then();
-                                    props.onClose("keybind");
-                                }}  >Valider</button>
-                                <button onClick={() => {
-                                     loadCurrentKeybinds();
-                                    props.onClose("keybind");
-                                }} className="btn-modal">Annuler</button>
+                    <div className="overlay">
+                        <div className="modal">
+                            <div className="modal-header">
+                                <div className="title">
+                                    <span className="icon">⌨️</span>
+                                    Raccourci clavier
+                                </div>
                             </div>
 
+                            <div className="modal-body">
+                                <div className="shortcut-grid">
+
+                                    {/* Décrément */}
+                                    <div className="shortcut-item">
+                                        <span className="value">Décrémenter</span>
+
+                                        <div
+                                            className="capture-box"
+                                            onClick={() => inputDecrementRef.current.focus()}
+                                        >
+                                            <input
+                                                ref={inputDecrementRef}
+                                                type="text"
+                                                autoComplete="off"
+                                                onKeyDown={(e) => {
+                                                    e.preventDefault();
+                                                    let key = e.key.toLowerCase();
+                                                    key = key.replace("arrow", "");
+                                                    setDecrementBindUpdate(key);
+                                                }}
+                                            />
+
+                                            <span className="hint">Appuyez…</span>
+                                            <div className="key">
+                                                {decrementBindUpdate.toUpperCase()}
+                                            </div>
+                                        </div>
+
+                                        <span className="label">Actuelle</span>
+                                        <div className="key-small">
+                                            {decrementInitial.toUpperCase()}
+                                        </div>
+                                    </div>
+
+                                    {/* Incrément */}
+                                    <div className="shortcut-item">
+                                        <span className="value">Incrémenter</span>
+
+                                        <div
+                                            className="capture-box"
+                                            onClick={() => inputIncrementRef.current.focus()}
+                                        >
+                                            <input
+                                                ref={inputIncrementRef}
+                                                type="text"
+                                                autoComplete="off"
+                                                onKeyDown={(e) => {
+                                                    e.preventDefault();
+                                                    let key = e.key.toLowerCase();
+                                                    key = key.replace("arrow", "");
+                                                    setIncrementBindUpdate(key);
+                                                }}
+                                            />
+
+                                            <span className="hint">Appuyez…</span>
+                                            <div className="key">
+                                                {incrementBindUpdate.toUpperCase()}
+                                            </div>
+                                        </div>
+
+                                        <span className="label">Actuelle</span>
+                                        <div className="key-small">
+                                            {incrementInitial.toUpperCase()}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div className="modal-footer">
+                                <button
+                                    className="btn cancel"
+                                    onClick={() => {
+                                        loadCurrentKeybinds();
+                                        props.onClose("keybind");
+                                    }}
+                                >
+                                    Annuler
+                                </button>
+
+                                <button
+                                    className="btn primary"
+                                    onClick={() => {
+                                        updateKeybind().then();
+                                        props.onClose("keybind");
+                                    }}
+                                >
+                                    Valider
+                                </button>
+                            </div>
                         </div>
                     </div>
-
                 </>
-
             )}
         </>
     );

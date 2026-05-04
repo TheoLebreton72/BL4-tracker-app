@@ -19,33 +19,41 @@ function InputModal(props) {
         <>
             {props.modal && (
                 <>
-                    <div className="modal">
-                        <div className="overlay"></div>
-                        <div className="modal-content">
-                            <input onChange={(e) =>
-                                props.modalType === "title"
-                                    ? setTitleValue(e.target.value)
-                                    : setCountValue(parseInt(e.target.value.replace(/\D/g, ""), 10) || 0)}
-                                   className="input-modal"
-                                   value={props.modalType === "count" ? countValue : titleValue}
-                            />
+                    <div className="overlay">
+                        <div className="modal-input">
+                            <div className="modal-header">
+                                <div className="title">
+                                    {props.modalType === "title" ? "Modifier le titre" : "Modifier le compteur"}
+                                </div>
+                            </div>
 
-                            <div className="btn-container">
-                                {/*Appel des fonctions de modification pour faire remonter les données au composant MenuConfig*/}
+                            <div className="modal-body">
+                                    <div className="shortcut-item">
+                                        <span className="value">Modifier : </span><br/>
+
+                                            <input onChange={(e) =>
+                                                props.modalType === "title"
+                                                    ? setTitleValue(e.target.value)
+                                                    : setCountValue(parseInt(e.target.value.replace(/\D/g, ""), 10) || 0)}
+                                                   className="capture-box input-modal"
+                                                   value={props.modalType === "count" ? countValue : titleValue}
+                                            />
+                                    </div>
+                            </div>
+
+                            <div className="modal-footer">
+                                <button className="btn cancel" onClick={() => {props.onClose();}}>Annuler</button>
+
                                 <button onClick={() => {
                                     props.modalType === "title"
                                         ? props.editTitle(titleValue)
                                         : props.editCount(countValue);
                                     props.onClose();
-                                }} className="btn-modal">Valider</button>
-                                <button onClick={() => {props.onClose()}} className="btn-modal">Annuler</button>
+                                }} className="btn primary">Valider</button>
                             </div>
-
                         </div>
                     </div>
-
                 </>
-
             )}
         </>
     );
