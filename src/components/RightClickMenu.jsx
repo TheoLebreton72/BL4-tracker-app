@@ -2,7 +2,7 @@ import React, {useEffect, useRef} from 'react';
 import Compteur from "./Compteur.jsx";
 import {Menu, MenuItem, Submenu} from "@tauri-apps/api/menu";
 
-export default function RightClickMenu({ onEditTitle, onEditCount, onResetCount, onEditKeybind }) {
+export default function RightClickMenu({ onEditTitle, onEditCount, onResetCount, onEditKeybind, onSaveLoadFile }) {
     const menuRef = useRef(null);
 
     useEffect(() => {
@@ -44,13 +44,20 @@ export default function RightClickMenu({ onEditTitle, onEditCount, onResetCount,
                         action: () => {
                            onEditKeybind();
                         }
+                    },
+                    {
+                        id: "save_load",
+                        text: "Charger/Sauvegarder les données",
+                        action: () => {
+                            onSaveLoadFile();
+                        }
                     }],
             });
             menuRef.current = menu;
         }
 
         createMenu();
-    }, [onEditTitle, onEditCount, onResetCount, onEditKeybind]);
+    }, [onEditTitle, onEditCount, onResetCount, onEditKeybind, onSaveLoadFile]);
 
     const handleRightClick = async (event) => {
         event.preventDefault();

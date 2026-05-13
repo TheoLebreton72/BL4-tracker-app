@@ -1,7 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::process::{Command, Stdio, Child};
 use std::io::{BufRead, BufReader};
+use std::process::{Child, Command, Stdio};
 use std::thread;
 use tauri::Emitter;
 use tauri::Manager;
@@ -57,8 +57,12 @@ fn spawn_listener(mut child: Child, process: &mut Option<Child>, app_handle: tau
         for line in reader.lines() {
             if let Ok(line) = line {
                 match line.as_str() {
-                    "increment" => { app_handle.emit("counter-increment", ()).unwrap(); }
-                    "decrement" => { app_handle.emit("counter-decrement", ()).unwrap(); }
+                    "increment" => {
+                        app_handle.emit("counter-increment", ()).unwrap();
+                    }
+                    "decrement" => {
+                        app_handle.emit("counter-decrement", ()).unwrap();
+                    }
                     _ => {}
                 }
             }
@@ -68,8 +72,13 @@ fn spawn_listener(mut child: Child, process: &mut Option<Child>, app_handle: tau
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_dialog::init())
         .manage(PythonProcess(Mutex::new(None)))
-        .manage(CurrentKeybinds(Mutex::new(("+".to_string(), "-".to_string()))))
+        .manage(CurrentKeybinds(Mutex::new((
+            "+".to_string(),
+            "-".to_string(),
+        ))))
         .setup(|app| {
             let app_handle = app.handle().clone();
             let state = app.state::<PythonProcess>();

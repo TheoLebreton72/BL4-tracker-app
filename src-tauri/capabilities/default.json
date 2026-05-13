@@ -8,6 +8,15 @@
   "permissions": [
     "core:default",
     "core:window:default",
-    "core:window:allow-set-always-on-top"
+    "core:window:allow-set-always-on-top",
+    "dialog:allow-open",
+    "dialog:allow-save",
+    "fs:allow-read-text-file",
+    "fs:allow-write-text-file",
+    "fs:read-files",
+    "fs:write-files",
+    "fs:scope-download-recursive",
+    "fs:scope-desktop-recursive",
+    "fs:scope-home-recursive"
   ]
 }
