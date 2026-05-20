@@ -10,8 +10,8 @@ function KeybindModal(props) {
     const [incrementInitial, setIncrementInitial] = useState(null);
 
     // Définir les touches mise a jour
-    const [decrementBindUpdate, setDecrementBindUpdate] = useState("?");
-    const [incrementBindUpdate, setIncrementBindUpdate] = useState("?");
+    const [decrementBindUpdate, setDecrementBindUpdate] = useState(null);
+    const [incrementBindUpdate, setIncrementBindUpdate] = useState(null);
 
 
 
@@ -21,10 +21,21 @@ function KeybindModal(props) {
 
     async function updateKeybind() {
         try {
-            const update = await invoke('update_keybind', { decrementKeybind: decrementBindUpdate, incrementKeybind: incrementBindUpdate });
-            setDecrementInitial(decrementBindUpdate);
-            setIncrementInitial(incrementBindUpdate);
-            toast.success("les touches ont été modifiées avec succès !")
+            // Récupère les touches actuelles
+            const [currentIncrement, currentDecrement] = await invoke('get_keybinds');
+
+            // Si l'utilisateur n'a pas changé une touche, on garde l'actuelle
+            const finalIncrement = incrementBindUpdate ?? currentIncrement;
+            const finalDecrement = decrementBindUpdate ?? currentDecrement;
+
+            await invoke('update_keybind', {
+                decrementKeybind: finalDecrement,
+                incrementKeybind: finalIncrement
+            });
+
+            setDecrementInitial(finalDecrement);
+            setIncrementInitial(finalIncrement);
+            toast.success("Les touches ont été modifiées avec succès !");
         } catch (error) {
             console.error('Erreur :', error);
         }
@@ -81,7 +92,7 @@ function KeybindModal(props) {
 
                                             <span className="hint">Appuyez…</span>
                                             <div className="key">
-                                                {decrementBindUpdate.toUpperCase()}
+                                                {decrementBindUpdate ? decrementBindUpdate.toUpperCase() : "?" }
                                             </div>
                                         </div>
 
@@ -113,7 +124,7 @@ function KeybindModal(props) {
 
                                             <span className="hint">Appuyez…</span>
                                             <div className="key">
-                                                {incrementBindUpdate.toUpperCase()}
+                                                {incrementBindUpdate ? incrementBindUpdate.toUpperCase() : "?" }
                                             </div>
                                         </div>
 
