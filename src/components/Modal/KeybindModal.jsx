@@ -1,5 +1,6 @@
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { invoke } from "@tauri-apps/api/core";
+import {toast, Toaster} from "sonner";
 import '../../style/modal.css'
 
 function KeybindModal(props) {
@@ -23,6 +24,7 @@ function KeybindModal(props) {
             const update = await invoke('update_keybind', { decrementKeybind: decrementBindUpdate, incrementKeybind: incrementBindUpdate });
             setDecrementInitial(decrementBindUpdate);
             setIncrementInitial(incrementBindUpdate);
+            toast.success("les touches ont été modifiées avec succès !")
         } catch (error) {
             console.error('Erreur :', error);
         }
@@ -147,6 +149,7 @@ function KeybindModal(props) {
                             </div>
                         </div>
                     </div>
+                    <Toaster position="top-right" richColors />
                 </>
             )}
         </>

@@ -36,7 +36,7 @@ function InputModal(props) {
                                                     ? setTitleValue(e.target.value)
                                                     : setCountValue(parseInt(e.target.value.replace(/\D/g, ""), 10) || 0)}
                                                    className="capture-box input-modal"
-                                                   value={props.modalType === "count" ? countValue : titleValue}
+                                                   placeholder={props.modalType === "count" ? countValue : titleValue}
                                             />
                                     </div>
                             </div>

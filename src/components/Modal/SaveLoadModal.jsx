@@ -3,16 +3,18 @@ import '../../style/modal.css'
 import {open as openMenu, save} from '@tauri-apps/plugin-dialog';
 import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs"
 import {invoke} from "@tauri-apps/api/core";
+import {toast, Toaster} from "sonner";
 
 function SaveLoadModal(props) {
 
+    //données du fichier chargé
     const [data, setData] = useState({});
-    //nom du fichier chargé
-    const [fileName, setFileName] = useState("");
-    //nom du fichier sauvegardé
-    const [savedFileName, setSavedFileName] = useState("");
+    const [saveMessage, setSaveMessage] = useState("");
+    const [loadMessage, setLoadMessage] = useState("");
 
 
+
+    //permet de sélectionner un fichier sur le PC de l'utilisateur afin de le charger
     async function  openFile(){
 
         //ouverture du menu de sélection de fichier + récupération donnée fichier JSON
@@ -25,8 +27,9 @@ function SaveLoadModal(props) {
         // l'utilisateur annule
         if(!file) return;
 
-        const fileName = file.split('/').pop().split('\\').pop();
-        setFileName(fileName);
+        //permet de récupérer le nom du fichier
+        // const fileName = file.split('/').pop().split('\\').pop();
+        // setFileName(fileName);
 
         //lecture du fichier
         const content = await readTextFile(file);
@@ -36,9 +39,13 @@ function SaveLoadModal(props) {
         //stockage des données du fichier
         setData(dataFile);
 
+        toast.success("Fichier chargé avec succès !");
+        setLoadMessage("Fichier chargé !");
+        setTimeout(() => setLoadMessage(""), 4000);
+
     }
 
-
+    //permet de sauvegarder une configuration de compteur sur le PC de l'utilisateur
     async function saveFile(title, count){
 
         //récupération des bind actuels
@@ -54,8 +61,8 @@ function SaveLoadModal(props) {
 
         if(!path) return;
 
-        const fileName = path.split('/').pop().split('\\').pop();
-        setSavedFileName(fileName + ".json");
+        // const fileName = path.split('/').pop().split('\\').pop();
+        // setSavedFileName(fileName + ".json");
 
         //permet d'ajouter l'extension .json a la fin du nom de fichier si l'utilisateur oublie de le spécifier
         const finalPath = path.endsWith('.json') ? path : path + '.json';
@@ -68,6 +75,10 @@ function SaveLoadModal(props) {
                 decrement: decrement,
                 increment: increment
             }}))
+
+        toast.success("Fichier sauvegardé avec succès !");
+        setSaveMessage("Fichier sauvegardé !");
+        setTimeout(() => setSaveMessage(""), 4000);
 
     }
 
@@ -87,7 +98,6 @@ function SaveLoadModal(props) {
             props.setCount(props.count);
         }
     }
-
 
 
     return (
@@ -112,7 +122,7 @@ function SaveLoadModal(props) {
                                             className="capture-box"
                                             onClick={() => openFile()}
                                         >
-                                            {fileName ? (<span className="value">{fileName}</span>) : <span className="hint">Appuyez…</span>}
+                                            {loadMessage ? <span className="value">{loadMessage}</span> : <span className="hint">Appuyez…</span> }
                                         </div>
 
                                     </div>
@@ -127,7 +137,7 @@ function SaveLoadModal(props) {
                                             }}
                                         >
 
-                                            {savedFileName ? (<span className="value">{savedFileName}</span>) : <span className="hint">Appuyez…</span>}
+                                            {saveMessage ? (<span className="value">{saveMessage}</span>) : <span className="hint">Appuyez…</span>}
                                         </div>
 
                                     </div>
@@ -154,6 +164,7 @@ function SaveLoadModal(props) {
                             </div>
                         </div>
                     </div>
+                    <Toaster position="top-right" richColors />
                 </>
             )}
         </>

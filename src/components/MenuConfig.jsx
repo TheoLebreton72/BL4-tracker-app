@@ -1,11 +1,12 @@
 import { Menu, MenuItem, Submenu } from "@tauri-apps/api/menu";
 import {listen} from "@tauri-apps/api/event";
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Compteur from "./Compteur.jsx";
 import RightClickMenu from "./RightClickMenu.jsx";
 import InputModal from "./Modal/InputModal.jsx";
 import KeybindModal from "./Modal/KeybindModal.jsx";
 import SaveLoadModal from "./Modal/SaveLoadModal.jsx";
+import {toast, Toaster} from "sonner";
 
 function MenuConfig(props) {
     const [title, setTitle] = useState("Saisir un titre");
@@ -57,11 +58,13 @@ function MenuConfig(props) {
     //modifier le titre
     const editTitle = (titre) => {
         setTitle(titre);
+        toast.success("Titre modifié avec succès !")
     };
 
     //modifier la valeur du compteur
     const editCount = (compteur) => {
         setCount(compteur);
+        toast.success("Valeur du compteur modifiée avec succès !")
     };
 
     //réinitialiser le compteur
@@ -129,6 +132,7 @@ function MenuConfig(props) {
                 count={count} />
             <KeybindModal modal={keybindModal} onClose={closeModal} modalType={modalType} />
             <SaveLoadModal modal={saveLoadModal} onClose={closeModal} modalType={modalType} title={title} count={count} setTitle={setTitle} setCount={setCount} />
+            <Toaster position="top-right" richColors />
         </div>
     );
 }
