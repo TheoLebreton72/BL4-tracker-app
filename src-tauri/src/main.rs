@@ -3,14 +3,14 @@
 use std::io::{BufRead, BufReader};
 use std::process::{Child, Command, Stdio};
 use std::thread;
+use std::sync::Mutex;
 use tauri::Emitter;
 use tauri::Manager;
 use tauri::State;
+use std::os::windows::process::CommandExt;
 
 struct PythonProcess(Mutex<Option<Child>>);
 struct CurrentKeybinds(Mutex<(String, String)>);
-
-use std::sync::Mutex;
 
 #[tauri::command]
 fn update_keybind(
@@ -20,25 +20,36 @@ fn update_keybind(
     keybinds: State<CurrentKeybinds>,
     app_handle: tauri::AppHandle,
 ) {
-    // Sauvegarder les nouvelles touches
+    let resource_path = std::env::current_exe()
+                    .unwrap()
+                    .parent()
+                    .unwrap()
+                    .join("keybind.exe");
+
     let mut current = keybinds.0.lock().unwrap();
     *current = (increment_keybind.clone(), decrement_keybind.clone());
     drop(current);
 
     let mut process = state.0.lock().unwrap();
 
-    if let Some(child) = process.as_mut() {
-        let _ = child.kill();
-    }
+if let Some(mut child) = process.take() {
+    let _ = child.kill();
+    let _ = child.wait();
+    // Tue tous les processus keybind par nom
+    Command::new("taskkill")
+        .args(["/F", "/T", "/IM", "keybind.exe"])
+        .creation_flags(0x08000000)
+        .output()
+        .ok();
+}
 
-    let new_child = Command::new("python3")
-        .arg("../src/scripts/keybind.py")
+    let new_child = Command::new(resource_path)
         .arg(&increment_keybind)
         .arg(&decrement_keybind)
         .stdout(Stdio::piped())
-        .stderr(Stdio::inherit())
+        .stderr(Stdio::null())
         .spawn()
-        .expect("Impossible de relancer keybind.py");
+        .expect("Impossible de relancer keybind");
 
     spawn_listener(new_child, &mut process, app_handle);
 }
@@ -81,13 +92,19 @@ fn main() {
         ))))
         .setup(|app| {
             let app_handle = app.handle().clone();
+
+            let resource_path = std::env::current_exe()
+                .unwrap()
+                .parent()
+                .unwrap()
+                .join("keybind.exe");
+
             let state = app.state::<PythonProcess>();
             let mut process = state.0.lock().unwrap();
 
-            let child = Command::new("python3")
-                .arg("../src/scripts/keybind.py")
+            let child =  Command::new(&resource_path)
                 .stdout(Stdio::piped())
-                .stderr(Stdio::inherit())
+                .stderr(Stdio::null())
                 .spawn()
                 .expect("Impossible de lancer keybind.py");
 
