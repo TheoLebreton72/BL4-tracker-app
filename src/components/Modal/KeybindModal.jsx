@@ -98,7 +98,7 @@ function KeybindModal(props) {
 
                                         <span className="label">Actuelle</span>
                                         <div className="key-small">
-                                            {decrementInitial.toUpperCase()}
+                                            {decrementInitial?.toUpperCase()}
                                         </div>
                                     </div>
 
@@ -130,7 +130,7 @@ function KeybindModal(props) {
 
                                         <span className="label">Actuelle</span>
                                         <div className="key-small">
-                                            {incrementInitial.toUpperCase()}
+                                            {incrementInitial?.toUpperCase()}
                                         </div>
                                     </div>
 
@@ -154,6 +154,8 @@ function KeybindModal(props) {
                                         updateKeybind().then();
                                         props.onClose("keybind");
                                     }}
+
+                                    disabled={!decrementBindUpdate && !incrementBindUpdate}
                                 >
                                     Valider
                                 </button>

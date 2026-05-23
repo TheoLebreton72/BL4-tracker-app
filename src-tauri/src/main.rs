@@ -108,6 +108,17 @@ fn main() {
                 .spawn()
                 .expect("Impossible de lancer keybind.py");
 
+            let window = app.get_webview_window("main").unwrap();
+            window.on_window_event(move |event| {
+                if let tauri::WindowEvent::Destroyed = event {
+                    Command::new("taskkill")
+                        .args(["/F", "/T", "/IM", "keybind.exe"])
+                        .creation_flags(0x08000000)
+                        .spawn()
+                        .ok();
+                }
+            });
+
             spawn_listener(child, &mut process, app_handle);
             Ok(())
         })

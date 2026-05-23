@@ -130,7 +130,7 @@ function MenuConfig(props) {
                 editCount={editCount}
                 title={title}
                 count={count} />
-            <KeybindModal modal={keybindModal} onClose={closeModal} modalType={modalType} />
+            <KeybindModal key={keybindModal ? 'open' : 'closed'} modal={keybindModal} onClose={closeModal} modalType={modalType} />
             <SaveLoadModal modal={saveLoadModal} onClose={closeModal} modalType={modalType} title={title} count={count} setTitle={setTitle} setCount={setCount} />
             <Toaster position="top-right" richColors />
         </div>

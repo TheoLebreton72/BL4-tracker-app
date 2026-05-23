@@ -17,11 +17,14 @@ def get_key_name(key):
         return key.name # pour une touche spéciale comme F1, F2 ou Delete, on retourne le nom de la touche
 
 def on_press(key):
+    try:
         key_name = get_key_name(key)
         if key_name == increment_key:
             print("increment", flush=True)
         elif key_name == decrement_key:
             print("decrement", flush=True)
+    except Exception:
+        pass
 
 
 with keyboard.Listener(on_press=on_press) as listener:
