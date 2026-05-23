@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "bl4-tracker-app",
+  "productName": "BL4 Farm tracker",
   "version": "0.1.0",
   "identifier": "com.bl4tracker.dev",
   "build": {
